@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Jquery购物车例子</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		$.getJSON("card_json",function(data){
+			//console.log(data);
+			$.each(data,function(index,obj){
+				var sum=obj.price*obj.qty;
+				$('.table').find('tbody').append('<tr><td class="c_index">'+(index+1)+'</td><td class="c_name">'+obj.name+'</td><td class="c_price">'+obj.price+'</td><td class="c_qty"><input class="form-control " onchange="change(this)" type="text" name="qty" value="'+obj.qty+'"></td><td class="c_sum">'+sum+'</td><td><button class="btn btn-danger" onclick="remove_cart(this)">删除</button></td></tr>');
+			});
+			total_count();
+		});
+		
+	});
+	function change(obj){
+		//$(obj).find('.c_price')
+		var price=$(obj).parent().prev().text()*$(obj).val();
+		$(obj).parent().next().html(price);
+		total_count();
+	}
+	function remove_cart(obj){
+		$(obj).parents('tr').remove();
+		total_count();
+	}
+	function total_count(){
+		var sum=0;
+		$('.table').find('tr').find('.c_qty input').each(function(){
+			sum+=parseInt($(this).val());
+		});
+		$('#sum').html(sum);
+		var total=0;
+		$('.table').find('tr').find('.c_sum').each(function(){
+			total+=parseInt($(this).text());
+		});
+		$('#total').html(total);
+	}
+	function delete_cart(){
+		$('.table').find('tbody tr').remove();
+		total_count();
+	}
+</script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="col-xs-2">#</th>
+						<th class="col-xs-2">产品名称</th>
+						<th class="col-xs-2">单价</th>
+						<th class="col-xs-2">数量</th>
+						<th class="col-xs-2">价格</th>
+						<th class="col-xs-2">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+		</div>
+		<div class="row">
+			
+			<div class="col-md-4"><span>总量：</span><span id="sum">10</span></div>
+			<div class="col-md-4"><span>总价：</span><span id="total">1000</span></div>
+			<div class="col-md-4"><a class="btn btn-default"><i class="glyphicon glyphicon-shopping-cart"></i> 结算</a> <a class="btn btn-danger" onclick="delete_cart()">清空购物车</a></div>
+
+		</div>
+
+	</div>
+</body>
+</html>
